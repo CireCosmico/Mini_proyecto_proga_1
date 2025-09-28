@@ -10,6 +10,8 @@ typedef struct Usua{
     char CI[MAX];
     char nombre[MAX];
     char apellido[MAX];
+    //cantidad de preguntas
+    int cam_pre;
 
 }Usua;
 

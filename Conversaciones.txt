@@ -4,3 +4,30 @@ Un modelo de lenguaje que genera texto similar al humano.
 16735596 Angel Landaeta
 ¿Como estas?
 Estoy funcionando correctamente, gracias.
+3000000 miku jimenez
+hi
+no, soy rewirt
+3000000 miku jimenez
+jp
+no, soy rewirt
+3000000 miku jimenez 
+d 
+no, soy rewirt 
+3000000 miku jimenez 
+d 
+no, soy rewirt 
+3000000 miku jimenez 
+e 
+no, soy rewirt 
+3000000 miku jimenez 
+e 
+no, soy rewirt 
+3000000 miku jimenez 
+e 
+no, soy rewirt 
+3000000 miku jimenez 
+e 
+no, soy rewirt 
+3000000 miku jimenez 
+e 
+no, soy rewirt 
