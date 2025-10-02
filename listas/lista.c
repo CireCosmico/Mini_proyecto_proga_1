@@ -117,18 +117,22 @@ void impri_lista(listas* lista){
     }
 }
 
-Usua* buscar_usuario(listas* lista, char* CI, char* nombre, char* apellido){
+bool buscar_usuario(listas* lista,Usua dato){
     Nodo_lista* aux = lista->cabeza;
+    bool esta = false;
     
     while(aux != NULL){
-        if(strcmp(aux->usuario.CI, CI) == 0 &&
-           strcmp(aux->usuario.nombre, nombre) == 0 &&
-           strcmp(aux->usuario.apellido, apellido) == 0){
-            return &(aux->usuario);
+        if(strcmp(aux->usuario.CI, dato.CI) == 0 &&
+           strcmp(aux->usuario.nombre, dato.nombre) == 0 &&
+           strcmp(aux->usuario.apellido, dato.apellido) == 0){
+
+            esta = true;
+
+
         }
         aux = aux->next;
     }
-    return NULL;
+    return esta;
 }
 
 void elimi_lista(listas* lista){

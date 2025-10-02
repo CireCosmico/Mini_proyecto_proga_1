@@ -10,6 +10,9 @@ void menu();
 int comsulta(Usua* usuari_act);
 void guar_histori(Usua* usuari_act,Preg_res conver_act );
 void registro(Usua* usuari_act,int cantida_pre,int sin_res);
+listas* cargar_usuarios_desde_archivo();
+Usua registrar_usuario_teclado();
+Usua iniciar_se(listas* us);
 
 int main(){
 
@@ -35,14 +38,11 @@ listas* cargar_usuarios_desde_archivo(){
         strcpy(nuevo_usuario.CI, CI);
         strcpy(nuevo_usuario.nombre, nombre);
         strcpy(nuevo_usuario.apellido, apellido);
-        nuevo_usuario.cam_pre = 0;
-        nuevo_usuario.historial = crear_pila();
         
         inset_one(lista, nuevo_usuario);
     }
     
     fclose(archivo);
-    printf("Usuarios cargados exitosamente desde el archivo.\n");
     return lista;
 }
 
@@ -59,48 +59,41 @@ Usua registrar_usuario_teclado(){
     printf("Ingrese el apellido: ");
     scanf("%s", nuevo_usuario.apellido);
     
-    nuevo_usuario.cam_pre = 0;
-    nuevo_usuario.historial = crear_pila();
-    
     return nuevo_usuario;
 }
 
-// Función para comparar usuario con la lista
-bool verificar_usuario_lista(listas* lista, Usua usuario){
-    return buscar_usuario(lista, usuario.CI, usuario.nombre, usuario.apellido) != NULL;
-}
+
 
 void menu(){
 
     // no tocar aun que usted no lo crea esto funciana si
-    char no_usar[50];
-    fgets(no_usar, 70 , stdin);
 
-    Usua usua_prueba;
-    int cantidad_preg_pre = 2;
-    int aux;
+    listas* lis_us = cargar_usuarios_desde_archivo();
+    int aux,cantidad_preg_pre;
+    Usua us_actual;
 
-    strcpy(usua_prueba.CI,"3000000");
-    strcpy(usua_prueba.nombre,"miku");
-    strcpy(usua_prueba.apellido,"jimenez");
-    usua_prueba.cam_pre = 0;
+    strcpy(us_actual.CI,"p");
 
     int op;
-    bool sesion = true;
+    bool sesion = false;
 
     while (op != 7) {
 
         aux = 0;
 
+        if(strcmp(us_actual.CI,"p") != 0){
+            sesion = true;
+        }
+
         printf("---IA interactiva---\n\n");
 
         if(sesion){
 
-            printf("no as iniciado sesion en niguna cuenta por favor inicia sesion antes de realizar una consulta\n\n");
+            printf("ya as inicido sesion, pero si quieres cambiar de cuenta tienes que volver a iniciar sesion\n\n");
 
         }else {
 
-            printf("ya as inicido sesion, pero si quieres cambiar de cuenta tienes que volver a iniciar sesion\n\n");
+            printf("no as iniciado sesion en niguna cuenta por favor inicia sesion antes de realizar una consulta\n\n");
 
         }
 
@@ -117,15 +110,27 @@ void menu(){
         switch (op) {
 
             case 1:
+
+                printf("haz elegido la 1 para iniciar seccion\n\n");
+                us_actual = iniciar_se(lis_us);
+
             break;
 
             case 2:
 
-                // abria que ver si es usuario ya esta registrado y registrar la cantida de preguntas que hace el usuario resistradado
-                printf("haz iniciado una consulta con la IA\n\n");
-                aux = comsulta(&usua_prueba);
-                usua_prueba.cam_pre = usua_prueba.cam_pre + aux;
-                cantidad_preg_pre = cantidad_preg_pre + aux;
+                if(sesion){
+
+                    printf("haz iniciado una consulta con la IA\n\n");
+                    aux = comsulta(&us_actual);
+                    us_actual.cam_pre = us_actual.cam_pre + aux;
+                    cantidad_preg_pre = cantidad_preg_pre + aux;
+
+                }else {
+
+                    printf("no haz iniciado seccion, por faver inicia seccion en la opcion 1\n\n");
+
+                }
+
 
             break;
 
@@ -159,7 +164,7 @@ void menu(){
             break;
         }
 
-        registro(&usua_prueba,cantidad_preg_pre,0);
+        registro(&us_actual,cantidad_preg_pre,0);
 
     }
 
@@ -174,6 +179,9 @@ int comsulta(Usua* usuari_act){
     // hay que ver el formato de la pregunta
 
     printf("haz las prugutas que quieras, para salir del chat escribe exit \n\n");
+
+    // no tocar
+    fgets(conver_prue.pregunta, 70 , stdin);
 
     while (!salir) {
 
@@ -241,4 +249,32 @@ void registro(Usua* usuari_act,int cantida_pre,int sin_res){
 
     fclose(arc_esta);
 
+}
+
+Usua iniciar_se(listas* us){
+    Usua act;
+    bool esta = false;
+
+    do {
+
+        printf("por faver incresas los datos\n");
+
+        act = registrar_usuario_teclado();
+
+        if(buscar_usuario(us,act )){
+
+            printf("\nusuario en contrado\n");
+            esta = true;
+
+        }else {
+
+            printf("\nusuario no entrado por favor increce los datos bien\n");
+
+        }
+
+    }while (!esta);
+
+
+
+    return act;
 }
