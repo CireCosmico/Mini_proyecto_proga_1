@@ -4,6 +4,7 @@
 
 #include "tda/usuario.h"
 #include "tda/pre_res.h"
+#include "listas/lista.h"
 
 void menu();
 int comsulta(Usua* usuari_act);
@@ -15,6 +16,58 @@ int main(){
     menu();
 
     return 0;
+}
+
+// Función para cargar usuarios desde archivo a la lista
+listas* cargar_usuarios_desde_archivo(){
+    listas* lista = crear_lista();
+    FILE* archivo = fopen("Usuarios.txt", "r");
+    
+    if(archivo == NULL){
+        printf("Error: No se pudo abrir el archivo Usuarios.txt\n");
+        return lista;
+    }
+    
+    char CI[MAX], nombre[MAX], apellido[MAX];
+    
+    while(fscanf(archivo, "%s %s %s", CI, nombre, apellido) == 3){
+        Usua nuevo_usuario;
+        strcpy(nuevo_usuario.CI, CI);
+        strcpy(nuevo_usuario.nombre, nombre);
+        strcpy(nuevo_usuario.apellido, apellido);
+        nuevo_usuario.cam_pre = 0;
+        nuevo_usuario.historial = crear_pila();
+        
+        inset_one(lista, nuevo_usuario);
+    }
+    
+    fclose(archivo);
+    printf("Usuarios cargados exitosamente desde el archivo.\n");
+    return lista;
+}
+
+// Función para registrar nuevo usuario por teclado
+Usua registrar_usuario_teclado(){
+    Usua nuevo_usuario;
+    
+    printf("Ingrese la cedula: ");
+    scanf("%s", nuevo_usuario.CI);
+    
+    printf("Ingrese el nombre: ");
+    scanf("%s", nuevo_usuario.nombre);
+    
+    printf("Ingrese el apellido: ");
+    scanf("%s", nuevo_usuario.apellido);
+    
+    nuevo_usuario.cam_pre = 0;
+    nuevo_usuario.historial = crear_pila();
+    
+    return nuevo_usuario;
+}
+
+// Función para comparar usuario con la lista
+bool verificar_usuario_lista(listas* lista, Usua usuario){
+    return buscar_usuario(lista, usuario.CI, usuario.nombre, usuario.apellido) != NULL;
 }
 
 void menu(){

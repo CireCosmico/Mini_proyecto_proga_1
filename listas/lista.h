@@ -34,6 +34,7 @@ bool esta_en_lista(listas* lista,Usua dato);
 
 void impri_lista(listas* lista);
 void elimi_lista(listas* lista);
-
+Usua* buscar_usuario(listas* lista, char* CI, char* nombre, char* apellido);
+void elimi_lista(listas* lista);
 
 #endif
