@@ -5,6 +5,7 @@
 #include "tda/usuario.h"
 #include "tda/pre_res.h"
 #include "listas/lista.h"
+#include "pilas/pila.h"
 
 void menu();
 int comsulta(Usua* usuari_act);
@@ -13,6 +14,8 @@ void registro(Usua* usuari_act,int cantida_pre,int sin_res);
 listas* cargar_usuarios_desde_archivo();
 Usua registrar_usuario_teclado();
 Usua iniciar_se(listas* us);
+void leer_reg(listas* us);
+void mostrar_his(Usua* us_act);
 
 int main(){
 
@@ -71,6 +74,7 @@ void menu(){
     listas* lis_us = cargar_usuarios_desde_archivo();
     int aux,cantidad_preg_pre;
     Usua us_actual;
+    leer_reg(lis_us);
 
     strcpy(us_actual.CI,"p");
 
@@ -135,6 +139,19 @@ void menu(){
             break;
 
             case 3:
+
+                if(sesion){
+
+                    printf("haz elegido la 3 para ver el historial de la cuenta actual\n\n");
+                    mostrar_his(&us_actual);
+
+                }else {
+
+                    printf("no haz iniciado seccion, por faver inicia seccion en la opcion 1\n\n");
+
+                }
+
+
 
             break;
 
@@ -261,9 +278,12 @@ Usua iniciar_se(listas* us){
 
         act = registrar_usuario_teclado();
 
-        if(buscar_usuario(us,act )){
+        act = buscar_usuario(us,act );
+
+        if(strcmp(act.CI,"no") != 0){
 
             printf("\nusuario en contrado\n");
+            act.cam_pre =
             esta = true;
 
         }else {
@@ -277,4 +297,83 @@ Usua iniciar_se(listas* us){
 
 
     return act;
+}
+
+void leer_reg(listas* us){
+
+    FILE* arc_c;
+    Usua actual_us;
+    Preg_res act_pre;
+    Nodo_lista* aux;
+    bool poner = false;
+
+    arc_c = fopen("Conversaciones.txt","r");
+
+    if(arc_c==NULL){
+        printf("Errorwww\n");
+    }else {
+
+
+        while (!feof(arc_c)) {
+
+            aux = us->cabeza;
+            poner = false;
+
+            fscanf(arc_c,"%s",actual_us.CI);
+            fscanf(arc_c,"%s",actual_us.nombre);
+            fscanf(arc_c,"%s",actual_us.apellido);
+
+                fgets(act_pre.pregunta, 150 ,arc_c);
+
+            fgets(act_pre.pregunta, 150 ,arc_c);
+            fgets(act_pre.repuesta, 150 ,arc_c);
+            act_pre.pregunta[strcspn(act_pre.pregunta,"\n" )] = 0;
+            act_pre.repuesta[strcspn(act_pre.repuesta,"\n" )] = 0;
+
+            while (!poner && aux != NULL) {
+
+
+                if(strcmp(aux->usuario.CI, actual_us.CI) == 0 &&
+                    strcmp(aux->usuario.nombre, actual_us.nombre) == 0 &&
+                    strcmp(aux->usuario.apellido, actual_us.apellido) == 0){
+
+                    apilar(aux->usuario.historial,act_pre);
+                    aux->usuario.cam_pre++;
+                    poner = true;
+                    printf("jajajajajjajaajaj");
+
+
+                }else {
+
+                    aux = aux->next;
+
+                }
+            }
+
+        }
+
+    }
+
+}
+
+void mostrar_his(Usua* us_act){
+
+    Pilas* aux = crear_pila();
+    Preg_res impri;
+
+    printf("---historial---\n\n");
+
+    inver_pila(us_act->historial,aux );
+
+    while (!es_vacia_pila(aux)) {
+
+        impri = octen_tope(aux);
+        desapilar(aux);
+        printf("tu: %s\n",impri.pregunta);
+        printf("IA: %s\n",impri.repuesta);
+        apilar(us_act->historial,impri );
+
+    }
+
+
 }
