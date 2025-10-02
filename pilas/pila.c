@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 Pilas* crear_pila(){
     Pilas* pila = (Pilas*)malloc(sizeof(Pilas));
@@ -10,20 +11,21 @@ Pilas* crear_pila(){
     return pila;
 }
 
-Nodo* crear_nodo(int info){
-    Nodo* nodo = (Nodo*)malloc(sizeof(Nodo));
-    nodo->dato = info;
-    nodo->next = NULL;
-    return nodo;
+Nodo_Pila* crear_nodo_p(Preg_res valor){
+    Nodo_Pila* nodo_p = (Nodo_Pila*)malloc(sizeof(Nodo_Pila));
+    strcpy(nodo_p->his.pregunta,valor.pregunta );
+    strcpy(nodo_p->his.repuesta,valor.repuesta );
+    nodo_p->next = NULL;
+    return nodo_p;
 }
 
 // pone el elemento en la cima de la pila
 
-void apilar(Pilas* pila,int valor){
-    Nodo* nodo = crear_nodo(valor);
+void apilar(Pilas* pila,Preg_res valor){
+    Nodo_Pila* nodo_p = crear_nodo_p(valor);
 
-    nodo->next=pila->tope;
-    pila->tope=nodo;
+    nodo_p->next=pila->tope;
+    pila->tope=nodo_p;
     pila->longui++;
 
 }
@@ -31,7 +33,7 @@ void apilar(Pilas* pila,int valor){
 // quita el elemento que esta en el tope pero no lo devuelve
 
 void desapilar(Pilas* pila){
-    Nodo* aux;
+    Nodo_Pila* aux;
 
     if(pila->tope != NULL){
 
@@ -46,7 +48,7 @@ void desapilar(Pilas* pila){
 //invertir pila,se necesitas 2 pilas y ambas pilas tiene que estar creadas
 
 void inver_pila(Pilas* pila1,Pilas* pila2){
-    int aux;
+    Preg_res aux;
 
     while(!es_vacia_pila(pila1)){
 
@@ -85,12 +87,13 @@ bool es_vacia_pila(Pilas* pila){
 
 // devuelve el tope de la pila mas no lo elimina
 
-int octen_tope(Pilas* pila){
-    int tope = -1;
+Preg_res octen_tope(Pilas* pila){
+    Preg_res tope;
 
     if (pila->tope != NULL) {
 
-        tope=pila->tope->dato;
+        strcpy(tope.pregunta,pila->tope->his.pregunta);
+        strcpy(tope.repuesta,pila->tope->his.repuesta);
 
     }
 

@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #include "tda/usuario.h"
-#include "tda/base_pre_res.h"
+#include "tda/pre_res.h"
 
 void menu();
 int comsulta(Usua* usuari_act);
@@ -18,6 +18,10 @@ int main(){
 }
 
 void menu(){
+
+    // no tocar aun que usted no lo crea esto funciana si
+    char no_usar[50];
+    fgets(no_usar, 70 , stdin);
 
     Usua usua_prueba;
     int cantidad_preg_pre = 2;
@@ -117,9 +121,6 @@ int comsulta(Usua* usuari_act){
     // hay que ver el formato de la pregunta
 
     printf("haz las prugutas que quieras, para salir del chat escribe exit \n\n");
-
-    // no tocar aun que usted no lo crea esto funciana si
-    fgets(conver_prue.pregunta, 70 , stdin);
 
     while (!salir) {
 

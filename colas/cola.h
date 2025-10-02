@@ -9,23 +9,23 @@
  cuando devuelva devuelve que este adentro del nodo no el nodo por eso es iportante crear el tipo de dato, lo puedes hacer por valor o puntero
  es preferible devolver punteros ya que si encuantra el elemnto que delvuelva NULL como no entontado*/
 
-typedef struct Nodo{
+typedef struct Nodo_cola{
 
     int dato;
-    struct Nodo* next;
+    struct Nodo_cola* next;
 
-} Nodo;
+} Nodo_cola;
 
 typedef struct Colas{
 
-    Nodo* primero;
-    Nodo* ultimo;
+    Nodo_cola* primero;
+    Nodo_cola* ultimo;
     int longui;
 
 } Colas;
 
 Colas* crear_cola();
-Nodo* crear_nodo(int info);
+Nodo_cola* crear_nodo_c(int info);
 void encolar(Colas* cola,int valor);
 void desencolar(Colas* cola);
 int octe_primaro_cola(Colas* cola);

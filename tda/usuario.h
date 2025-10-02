@@ -4,6 +4,7 @@
 #define MAX 50
 
 #include <stdio.h>
+#include "../pilas/pila.h"
 
 typedef struct Usua{
 
@@ -13,9 +14,8 @@ typedef struct Usua{
     //cantidad de preguntas
     int cam_pre;
 
+    Pilas* historial;
+
 }Usua;
-
-
-
 
 #endif
