@@ -331,7 +331,6 @@ void leer_reg(listas* us){
 
             while (!poner && aux != NULL) {
 
-
                 if(strcmp(aux->usuario.CI, actual_us.CI) == 0 &&
                     strcmp(aux->usuario.nombre, actual_us.nombre) == 0 &&
                     strcmp(aux->usuario.apellido, actual_us.apellido) == 0){
