@@ -282,13 +282,13 @@ Usua iniciar_se(listas* us){
 
         if(strcmp(act.CI,"no") != 0){
 
-            printf("\nusuario en contrado\n");
+            printf("\nusuario en contrado\n\n");
             act.cam_pre =
             esta = true;
 
         }else {
 
-            printf("\nusuario no entrado por favor increce los datos bien\n");
+            printf("\nusuario no entrado por favor increce los datos bien\n\n");
 
         }
 
@@ -314,16 +314,15 @@ void leer_reg(listas* us){
     }else {
 
 
-        while (!feof(arc_c)) {
+        while (fscanf(arc_c,"%s",actual_us.CI) == !feof(arc_c) ) {
 
             aux = us->cabeza;
             poner = false;
 
-            fscanf(arc_c,"%s",actual_us.CI);
             fscanf(arc_c,"%s",actual_us.nombre);
             fscanf(arc_c,"%s",actual_us.apellido);
 
-                fgets(act_pre.pregunta, 150 ,arc_c);
+            fgets(act_pre.pregunta, 150 ,arc_c);
 
             fgets(act_pre.pregunta, 150 ,arc_c);
             fgets(act_pre.repuesta, 150 ,arc_c);
@@ -340,8 +339,6 @@ void leer_reg(listas* us){
                     apilar(aux->usuario.historial,act_pre);
                     aux->usuario.cam_pre++;
                     poner = true;
-                    printf("jajajajajjajaajaj");
-
 
                 }else {
 
@@ -370,10 +367,8 @@ void mostrar_his(Usua* us_act){
         impri = octen_tope(aux);
         desapilar(aux);
         printf("tu: %s\n",impri.pregunta);
-        printf("IA: %s\n",impri.repuesta);
+        printf("IA: %s\n\n",impri.repuesta);
         apilar(us_act->historial,impri );
 
     }
-
-
 }

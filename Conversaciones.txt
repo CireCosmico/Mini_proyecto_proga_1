@@ -4,6 +4,9 @@ Un modelo de lenguaje que genera texto similar al humano.
 16735596 Angel Landaeta
 ¿Como estas?
 Estoy funcionando correctamente, gracias.
-12345678 Maria Goncalves 
+16735596 Angel Landaeta
 hola 
+no, soy rewirt 
+16735596 Angel Landaeta 
+jaja 
 no, soy rewirt 

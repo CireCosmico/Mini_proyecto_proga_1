@@ -72,7 +72,7 @@ int longui_pila(Pilas* pila){
 bool es_vacia_pila(Pilas* pila){
     bool es;
 
-    if(pila->tope==NULL){
+    if(pila->tope == NULL){
 
         es=true;
 
