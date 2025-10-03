@@ -349,7 +349,6 @@ void leer_reg(listas* us){
                     apilar(aux->usuario.historial,act_pre);
                     aux->usuario.cam_pre++;
                     poner = true;
-                printf("%s %s %s can %d\n\n",aux->usuario.CI,aux->usuario.nombre,aux->usuario.apellido,aux->usuario.cam_pre);
 
                 }else {
 
