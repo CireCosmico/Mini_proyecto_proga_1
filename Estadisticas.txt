@@ -1,3 +1,4 @@
-Total de consultas: 786432
+Total de consultas en todas las seciones: 0
+Total de consultas en esta seccion: 0
 Consultas sin respuesta: 0
-Usuario con más consultas: 16735596 Angel Landaeta (1 consultas)
+Usuario con mas consultas: 30000000 miku jimenez (3 consultas)

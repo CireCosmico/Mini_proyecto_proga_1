@@ -11,12 +11,15 @@
 void menu();
 int comsulta(Usua* usuari_act);
 void guar_histori(Usua* usuari_act,Preg_res conver_act );
-void registro(Usua* usuari_act,int cantida_pre,int sin_res);
+void registro(Usua* usuari_act,int cantida_pre,int cantida_pre_act,int sin_res);
 listas* cargar_usuarios_desde_archivo();
 Usua registrar_usuario_teclado();
 Usua iniciar_se(listas* us);
 void leer_reg(listas* us);
 void mostrar_his(Usua* us_act);
+
+Usua con_mas_pre(listas* us,Usua actu);
+int total_de_pre(listas* us);
 
 int main(){
 
@@ -73,8 +76,8 @@ void menu(){
     // no tocar aun que usted no lo crea esto funciana si
 
     listas* lis_us = cargar_usuarios_desde_archivo();
-    int aux,cantidad_preg_pre;
-    Usua us_actual;
+    int aux = 0,cantidad_preg_pre = 0;
+    Usua us_actual,us_conmas;
     leer_reg(lis_us);
 
     strcpy(us_actual.CI,"p");
@@ -162,6 +165,10 @@ void menu(){
 
             case 5:
 
+                us_conmas = con_mas_pre(lis_us,us_actual);
+
+                registro(&us_conmas,cantidad_preg_pre,0,0);
+
             break;
 
             case 6:
@@ -182,9 +189,11 @@ void menu(){
             break;
         }
 
-        registro(&us_actual,cantidad_preg_pre,0);
-
     }
+
+    us_conmas = con_mas_pre(lis_us,us_actual);
+
+    registro(&us_conmas,cantidad_preg_pre,0,0);
 
 }
 
@@ -248,7 +257,7 @@ void guar_histori(Usua* usuari_act,Preg_res conver_act ){
     fclose(arc_coner);
 }
 
-void registro(Usua* usuari_act,int cantida_pre,int sin_res){
+void registro(Usua* usuari_act,int cantida_pre,int cantida_pre_act,int sin_res){
 
     //aqui hay que hacer mas cosas pero para eso nececito las lista
 
@@ -260,9 +269,10 @@ void registro(Usua* usuari_act,int cantida_pre,int sin_res){
         printf("Errorwww\n");
     }else {
 
-        fprintf(arc_esta,"Total de consultas: %d\n",cantida_pre);
+        fprintf(arc_esta,"Total de consultas en todas las seciones: %d\n",cantida_pre);
+        fprintf(arc_esta,"Total de consultas en esta seccion: %d\n",cantida_pre_act);
         fprintf(arc_esta,"Consultas sin respuesta: %d\n",sin_res );
-        fprintf(arc_esta,"Usuario con más consultas: %s %s %s (%d consultas)",usuari_act->CI,usuari_act->nombre,usuari_act->apellido,usuari_act->cam_pre );
+        fprintf(arc_esta,"Usuario con mas consultas: %s %s %s (%d consultas)",usuari_act->CI,usuari_act->nombre,usuari_act->apellido,usuari_act->cam_pre );
     }
 
     fclose(arc_esta);
@@ -339,6 +349,7 @@ void leer_reg(listas* us){
                     apilar(aux->usuario.historial,act_pre);
                     aux->usuario.cam_pre++;
                     poner = true;
+                printf("%s %s %s can %d\n\n",aux->usuario.CI,aux->usuario.nombre,aux->usuario.apellido,aux->usuario.cam_pre);
 
                 }else {
 
@@ -371,4 +382,46 @@ void mostrar_his(Usua* us_act){
         apilar(us_act->historial,impri );
 
     }
+}
+
+Usua con_mas_pre(listas* us,Usua actu){
+
+    Usua mas;
+    Nodo_lista* aux;
+    bool sesion = false;
+
+    if(strcmp(actu.CI,"p") == 0){
+        sesion = true;
+    }
+
+    if (sesion) {
+
+        mas = us->cabeza->usuario;
+        aux = us->cabeza->next;
+
+    }else {
+
+        mas = actu;
+        aux = us->cabeza;
+
+    }
+
+    while (aux != NULL) {
+
+        if(mas.cam_pre < aux->usuario.cam_pre ){
+
+            mas = aux->usuario;
+
+        }
+
+        aux = aux->next;
+
+    }
+
+    return mas;
+}
+
+
+int total_de_pre(listas* us){
+    return 0;
 }
