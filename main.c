@@ -6,6 +6,7 @@
 #include "tda/pre_res.h"
 #include "listas/lista.h"
 #include "pilas/pila.h"
+#include "colas/cola.h"
 
 void menu();
 int comsulta(Usua* usuari_act);

@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "../tda/pre_res.h"
+
 Colas* crear_cola(){
 
     Colas* cola = (Colas*)malloc(sizeof(Colas));
@@ -14,28 +16,29 @@ Colas* crear_cola(){
 
 }
 
-Nodo* crear_nodo(int info){
-    Nodo* nodo = (Nodo*)malloc(sizeof(Nodo));
-    nodo->dato = info;
-    nodo->next = NULL;
-    return nodo;
+Nodo_cola* crear_nodo(Preg_res info){
+    Nodo_cola* nodo_c = (Nodo_cola*)malloc(sizeof(Nodo_cola));
+    strcpy(nodo_c->sin_res.pregunta,info.pregunta);
+    strcpy(nodo_c->sin_res.repuesta,info.repuesta);
+    nodo_c->next = NULL;
+    return nodo_c;
 }
 
 // pone el elemento al fianl de la cola
 
-void encolar(Colas* cola,int valor){
-    Nodo* nodo =crear_nodo(valor);
+void encolar(Colas* cola,Preg_res valor){
+    Nodo_cola* nodo_c =crear_nodo(valor);
 
     if(cola->primero == NULL){
 
-        cola->primero = nodo;
-        cola->ultimo = nodo;
+        cola->primero = nodo_c;
+        cola->ultimo = nodo_c;
         cola->longui++;
 
     }else {
 
-        cola->ultimo->next=nodo;
-        cola->ultimo = nodo;
+        cola->ultimo->next=nodo_c;
+        cola->ultimo = nodo_c;
         cola->longui++;
 
     }
@@ -45,7 +48,7 @@ void encolar(Colas* cola,int valor){
 // quita el primer elemento de la cola mas no devuelve el elemento
 
 void desencolar(Colas* cola){
-    Nodo* aux;
+    Nodo_cola* aux;
 
     if (!es_vacia_cola(cola)) {
 
@@ -69,12 +72,12 @@ void desencolar(Colas* cola){
 
 // te da el primer elemento de cola mas no lo quita, si la cola esta vacia devuelve -1
 
-int octe_primaro_cola(Colas* cola){
-    int pri = -1;
+Preg_res octe_primaro_cola(Colas* cola){
+    Preg_res pri;
 
     if(cola->primero != NULL){
 
-        pri=cola->primero->dato;
+        pri = cola->primero->sin_res;
 
     }
 
@@ -83,8 +86,8 @@ int octe_primaro_cola(Colas* cola){
 
 // te da el primer elenento de la cola y lo quita, si la cola esta vacia devuelve -1
 
-int despacho(Colas* cola){
-    int pri = -1;
+Preg_res despacho(Colas* cola){
+    Preg_res pri;
 
     if(!es_vacia_cola(cola)){
 
@@ -133,7 +136,7 @@ void elim_cola(Colas* cola){
 
 void inver_cola(Colas* cola){
 
-    Nodo* aux;
+    Nodo_cola* aux;
 
     aux = cola->ultimo;
     cola->ultimo = cola->primero;
