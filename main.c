@@ -20,6 +20,8 @@ void mostrar_his(Usua* us_act);
 
 Usua con_mas_pre(listas* us,Usua actu);
 void total_de_pre(listas* us,int* cont);
+void ver_base_datos(Preg_res* ver);
+
 
 int main(){
 
@@ -220,9 +222,7 @@ int comsulta(Usua* usuari_act){
 
         if(strcmp(conver_prue.pregunta,"exit") != 0){
 
-            strcpy(conver_prue.repuesta,"Lo siento, no entiendo tu consulta");
-
-            // aqui deberia una funcion que vea si la respuesta esta en la base de dato
+            ver_base_datos(&conver_prue);
 
             printf("\nIA: %s\n\n",conver_prue.repuesta);
 
@@ -439,6 +439,46 @@ void total_de_pre(listas* us,int* cont){
 
         *cont = (*cont) + aux->usuario.cam_pre;
         aux = aux->next;
+
+    }
+
+}
+
+void ver_base_datos(Preg_res* ver){
+
+    FILE* arc_bae;
+    Preg_res aux;
+    bool ban = false;
+
+    arc_bae = fopen("BaseConocimiento.txt","r");
+
+    if(arc_bae == NULL){
+
+        printf("Errorwww\n");
+
+    }else {
+
+        while (!feof(arc_bae) && !ban) {
+
+            fgets(aux.pregunta, 150 ,arc_bae);
+            aux.pregunta[strcspn(aux.pregunta,"\n" )] = 0;
+            fgets(aux.repuesta, 150 ,arc_bae);
+            aux.repuesta[strcspn(aux.repuesta,"\n" )] = 0;
+
+            if (strcmp(aux.pregunta,ver->pregunta) == 0) {
+
+                ban = true;
+                strcpy(ver->repuesta,aux.repuesta);
+
+            }
+
+        }
+
+        if (!ban) {
+
+           strcpy(ver->repuesta,"Lo siento, no entiendo tu consulta");
+
+        }
 
     }
 

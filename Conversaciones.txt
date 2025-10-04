@@ -4,6 +4,9 @@ Un modelo de lenguaje que genera texto similar al humano.
 16735596 Angel Landaeta
 ¿Como estas?
 Estoy funcionando correctamente, gracias.
-16735596 Angel Landaeta
-¿y tu quien eres?
-Lo siento, no entiendo tu consulta
+30000000 miku jimenez 
+eres ultron 
+no 
+30000000 miku jimenez 
+eres sonic.exe 
+si 
