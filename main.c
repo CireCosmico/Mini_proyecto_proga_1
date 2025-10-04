@@ -110,9 +110,9 @@ void menu(){
 
         printf("1.​ Iniciar sesión​\n");
         printf("2.​ Realizar consulta​\n");
-        printf("​3.​ Ver historial\n");
-        printf("4.​ Deshacer última consulta​\n");
-        printf("5.​ Ver estadísticas​​\n");
+        printf("​3.​ Ver historial de la seccion actual\n");
+        printf("4.​ Deshacer última consulta de la seccion actual​\n");
+        printf("5.​ Ver estadísticas​​ generales\n");
         printf("​6.​ Administrador: ver cola de preguntas sin respuesta y actualizar la base de conocimiento.​\n");
         printf("​7.​ Salir.\n");
 
@@ -131,7 +131,7 @@ void menu(){
 
                 if(sesion){
 
-                    printf("haz iniciado una consulta con la IA\n\n");
+                    printf("haz elegido la 2, iniciado una consulta con la IA\n\n");
                     aux = comsulta(&us_actual);
                     us_actual.cam_pre = us_actual.cam_pre + aux;
                     cantidad_preg_pre = cantidad_preg_pre + aux;
@@ -164,6 +164,17 @@ void menu(){
 
             case 4:
 
+                if(sesion){
+
+                    printf("haz elegido la 4 para borrar la ulima pregunta de la seccion actual\n\n");
+                    // imprimir ultima pregunta y preguntar si eliminarla
+
+                }else {
+
+                    printf("no haz iniciado seccion, por faver inicia seccion en la opcion 1\n\n");
+
+                }
+
             break;
 
             case 5:
@@ -172,6 +183,8 @@ void menu(){
 
                 total_de_pre(lis_us,&cantidad_preg_pre);
                 registro(&us_conmas,cantidad_preg_pre,aux,longui_cola(conla_sin_res));
+
+                //aqui hay que imprimir Estadisticas
 
             break;
 
