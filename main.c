@@ -15,11 +15,11 @@ void registro(Usua* usuari_act,int cantida_pre,int cantida_pre_act,int sin_res);
 listas* cargar_usuarios_desde_archivo();
 Usua registrar_usuario_teclado();
 Usua iniciar_se(listas* us);
-void leer_reg(listas* us);
+void leer_reg(listas* us,Colas* sin);
 void mostrar_his(Usua* us_act);
 
 Usua con_mas_pre(listas* us,Usua actu);
-int total_de_pre(listas* us);
+void total_de_pre(listas* us,int* cont);
 
 int main(){
 
@@ -76,9 +76,10 @@ void menu(){
     // no tocar aun que usted no lo crea esto funciana si
 
     listas* lis_us = cargar_usuarios_desde_archivo();
+    Colas* conla_sin_res = crear_cola();
     int aux = 0,cantidad_preg_pre = 0;
     Usua us_actual,us_conmas;
-    leer_reg(lis_us);
+    leer_reg(lis_us,conla_sin_res);
 
     strcpy(us_actual.CI,"p");
 
@@ -167,7 +168,8 @@ void menu(){
 
                 us_conmas = con_mas_pre(lis_us,us_actual);
 
-                registro(&us_conmas,cantidad_preg_pre,0,0);
+                total_de_pre(lis_us,&cantidad_preg_pre);
+                registro(&us_conmas,cantidad_preg_pre,aux,longui_cola(conla_sin_res));
 
             break;
 
@@ -193,7 +195,8 @@ void menu(){
 
     us_conmas = con_mas_pre(lis_us,us_actual);
 
-    registro(&us_conmas,cantidad_preg_pre,0,0);
+    total_de_pre(lis_us,&cantidad_preg_pre);
+    registro(&us_conmas,cantidad_preg_pre,aux,longui_cola(conla_sin_res));
 
 }
 
@@ -217,7 +220,7 @@ int comsulta(Usua* usuari_act){
 
         if(strcmp(conver_prue.pregunta,"exit") != 0){
 
-            strcpy(conver_prue.repuesta,"no, soy rewirt");
+            strcpy(conver_prue.repuesta,"Lo siento, no entiendo tu consulta");
 
             // aqui deberia una funcion que vea si la respuesta esta en la base de dato
 
@@ -310,7 +313,7 @@ Usua iniciar_se(listas* us){
     return act;
 }
 
-void leer_reg(listas* us){
+void leer_reg(listas* us,Colas* sin){
 
     FILE* arc_c;
     Usua actual_us;
@@ -348,6 +351,13 @@ void leer_reg(listas* us){
 
                     apilar(aux->usuario.historial,act_pre);
                     aux->usuario.cam_pre++;
+
+                    if (strcmp(act_pre.repuesta,"Lo siento, no entiendo tu consulta") == 0) {
+
+                        encolar(sin,act_pre);
+
+                    }
+
                     poner = true;
 
                 }else {
@@ -421,6 +431,15 @@ Usua con_mas_pre(listas* us,Usua actu){
 }
 
 
-int total_de_pre(listas* us){
-    return 0;
+void total_de_pre(listas* us,int* cont){
+    Nodo_lista* aux;
+    aux = us->cabeza;
+
+    while (aux != NULL) {
+
+        *cont = (*cont) + aux->usuario.cam_pre;
+        aux = aux->next;
+
+    }
+
 }

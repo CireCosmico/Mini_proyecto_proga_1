@@ -16,7 +16,7 @@ Colas* crear_cola(){
 
 }
 
-Nodo_cola* crear_nodo(Preg_res info){
+Nodo_cola* crear_nodo_c(Preg_res info){
     Nodo_cola* nodo_c = (Nodo_cola*)malloc(sizeof(Nodo_cola));
     strcpy(nodo_c->sin_res.pregunta,info.pregunta);
     strcpy(nodo_c->sin_res.repuesta,info.repuesta);
@@ -27,7 +27,7 @@ Nodo_cola* crear_nodo(Preg_res info){
 // pone el elemento al fianl de la cola
 
 void encolar(Colas* cola,Preg_res valor){
-    Nodo_cola* nodo_c =crear_nodo(valor);
+    Nodo_cola* nodo_c =crear_nodo_c(valor);
 
     if(cola->primero == NULL){
 
