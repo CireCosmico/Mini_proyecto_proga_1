@@ -110,24 +110,26 @@ void impri_lista(listas* lista){
 
     while (aux!=NULL) {
 
-        printf("posicion %d CI %s nombre %s apellido %s ",cont,aux->usuario.CI,aux->usuario.nombre,aux->usuario.apellido);
+        printf("posicion %d CI %s nombre %s apellido %s can %d pila %d\n",cont,aux->usuario.CI,aux->usuario.nombre,aux->usuario.apellido,aux->usuario.cam_pre,longui_pila(aux->usuario.historial));
         cont++;
         aux=aux->next;
 
     }
 }
 
-Usua buscar_usuario(listas* lista,Usua dato){
+Usua* buscar_usuario(listas* lista,Usua dato){
     Nodo_lista* aux = lista->cabeza;
-    Usua act;
-    strcpy(act.CI,"no");
+    Usua* act = (Usua*)malloc(sizeof(Usua));;
+    strcpy(act->CI,"no");
     
     while(aux != NULL){
         if(strcmp(aux->usuario.CI, dato.CI) == 0 &&
            strcmp(aux->usuario.nombre, dato.nombre) == 0 &&
            strcmp(aux->usuario.apellido, dato.apellido) == 0){
 
-            return aux->usuario;
+            free(act);
+            act = &aux->usuario;
+            return act;
 
 
         }

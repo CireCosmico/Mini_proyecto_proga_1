@@ -9,18 +9,20 @@
 #include "colas/cola.h"
 
 void menu();
-int comsulta(Usua* usuari_act);
+int comsulta(Usua* usuari_act,Colas* sin);
 void guar_histori(Usua* usuari_act,Preg_res conver_act );
 void registro(Usua* usuari_act,int cantida_pre,int cantida_pre_act,int sin_res);
 listas* cargar_usuarios_desde_archivo();
 Usua registrar_usuario_teclado();
-Usua iniciar_se(listas* us);
+Usua* iniciar_se(listas* us);
 void leer_reg(listas* us,Colas* sin);
 void mostrar_his(Usua* us_act);
 
-Usua con_mas_pre(listas* us,Usua actu);
-void total_de_pre(listas* us,int* cont);
+Usua con_mas_pre(listas* us);
+int total_de_pre(listas* us);
 void ver_base_datos(Preg_res* ver);
+void amini_base(Colas* sin);
+void act_base(Preg_res poner);
 
 
 int main(){
@@ -80,10 +82,11 @@ void menu(){
     listas* lis_us = cargar_usuarios_desde_archivo();
     Colas* conla_sin_res = crear_cola();
     int aux = 0,cantidad_preg_pre = 0;
-    Usua us_actual,us_conmas;
+    Usua* us_actual = (Usua*)malloc(sizeof(Usua));;
+    Usua us_conmas;
     leer_reg(lis_us,conla_sin_res);
 
-    strcpy(us_actual.CI,"p");
+    strcpy(us_actual->CI,"p");
 
     int op;
     bool sesion = false;
@@ -92,7 +95,7 @@ void menu(){
 
         aux = 0;
 
-        if(strcmp(us_actual.CI,"p") != 0){
+        if(strcmp(us_actual->CI,"p") != 0){
             sesion = true;
         }
 
@@ -123,6 +126,7 @@ void menu(){
             case 1:
 
                 printf("haz elegido la 1 para iniciar seccion\n\n");
+                free(us_actual);
                 us_actual = iniciar_se(lis_us);
 
             break;
@@ -132,9 +136,8 @@ void menu(){
                 if(sesion){
 
                     printf("haz elegido la 2, iniciado una consulta con la IA\n\n");
-                    aux = comsulta(&us_actual);
-                    us_actual.cam_pre = us_actual.cam_pre + aux;
-                    cantidad_preg_pre = cantidad_preg_pre + aux;
+                    aux = comsulta(us_actual,conla_sin_res);
+                    us_actual->cam_pre = us_actual->cam_pre + aux;
 
                 }else {
 
@@ -150,7 +153,7 @@ void menu(){
                 if(sesion){
 
                     printf("haz elegido la 3 para ver el historial de la cuenta actual\n\n");
-                    mostrar_his(&us_actual);
+                    mostrar_his(us_actual);
 
                 }else {
 
@@ -179,10 +182,11 @@ void menu(){
 
             case 5:
 
-                us_conmas = con_mas_pre(lis_us,us_actual);
+                us_conmas = con_mas_pre(lis_us);
 
-                total_de_pre(lis_us,&cantidad_preg_pre);
+                cantidad_preg_pre = total_de_pre(lis_us);
                 registro(&us_conmas,cantidad_preg_pre,aux,longui_cola(conla_sin_res));
+
 
                 //aqui hay que imprimir Estadisticas
 
@@ -190,6 +194,8 @@ void menu(){
 
             case 6:
 
+                printf("haz elegido la 6 para Administrar la base de datos\n\n");
+                amini_base(conla_sin_res);
 
             break;
 
@@ -208,14 +214,14 @@ void menu(){
 
     }
 
-    us_conmas = con_mas_pre(lis_us,us_actual);
+    us_conmas = con_mas_pre(lis_us);
 
-    total_de_pre(lis_us,&cantidad_preg_pre);
+    cantidad_preg_pre = total_de_pre(lis_us);
     registro(&us_conmas,cantidad_preg_pre,aux,longui_cola(conla_sin_res));
 
 }
 
-int comsulta(Usua* usuari_act){
+int comsulta(Usua* usuari_act,Colas* sin){
 
     Preg_res conver_prue;
     bool salir = false;
@@ -230,6 +236,7 @@ int comsulta(Usua* usuari_act){
 
     while (!salir) {
 
+        printf("Tu: ");
         fgets(conver_prue.pregunta, 70 , stdin);
         conver_prue.pregunta[strcspn(conver_prue.pregunta,"\n" )] = 0;
 
@@ -238,6 +245,13 @@ int comsulta(Usua* usuari_act){
             ver_base_datos(&conver_prue);
 
             printf("\nIA: %s\n\n",conver_prue.repuesta);
+            apilar(usuari_act->historial,conver_prue );
+
+            if (strcmp(conver_prue.repuesta,"Lo siento, no entiendo tu consulta") == 0) {
+
+                encolar(sin,conver_prue );
+
+            }
 
             cant_pre++;
 
@@ -264,9 +278,9 @@ void guar_histori(Usua* usuari_act,Preg_res conver_act ){
         printf("Error\n");
     }else {
 
-        fprintf(arc_coner,"%s %s %s \n",usuari_act->CI,usuari_act->nombre,usuari_act->apellido );
-        fprintf(arc_coner,"%s \n",conver_act.pregunta );
-        fprintf(arc_coner,"%s \n",conver_act.repuesta );
+        fprintf(arc_coner,"%s %s %s\n",usuari_act->CI,usuari_act->nombre,usuari_act->apellido );
+        fprintf(arc_coner,"%s\n",conver_act.pregunta );
+        fprintf(arc_coner,"%s\n",conver_act.repuesta );
 
     }
 
@@ -274,8 +288,6 @@ void guar_histori(Usua* usuari_act,Preg_res conver_act ){
 }
 
 void registro(Usua* usuari_act,int cantida_pre,int cantida_pre_act,int sin_res){
-
-    //aqui hay que hacer mas cosas pero para eso nececito las lista
 
     FILE* arc_esta;
 
@@ -295,8 +307,9 @@ void registro(Usua* usuari_act,int cantida_pre,int cantida_pre_act,int sin_res){
 
 }
 
-Usua iniciar_se(listas* us){
+Usua* iniciar_se(listas* us){
     Usua act;
+    Usua* veri;
     bool esta = false;
 
     do {
@@ -305,12 +318,11 @@ Usua iniciar_se(listas* us){
 
         act = registrar_usuario_teclado();
 
-        act = buscar_usuario(us,act );
+        veri = buscar_usuario(us,act );
 
-        if(strcmp(act.CI,"no") != 0){
+        if(strcmp(veri->CI,"no") != 0){
 
             printf("\nusuario en contrado\n\n");
-            act.cam_pre =
             esta = true;
 
         }else {
@@ -323,7 +335,7 @@ Usua iniciar_se(listas* us){
 
 
 
-    return act;
+    return veri;
 }
 
 void leer_reg(listas* us,Colas* sin){
@@ -340,11 +352,12 @@ void leer_reg(listas* us,Colas* sin){
         printf("Errorwww\n");
     }else {
 
+        aux = us->cabeza;
+        poner = false;
 
-        while (fscanf(arc_c,"%s",actual_us.CI) == !feof(arc_c) ) {
+        while (fscanf(arc_c,"%s",actual_us.CI) == !feof(arc_c)) {
 
-            aux = us->cabeza;
-            poner = false;
+
 
             fscanf(arc_c,"%s",actual_us.nombre);
             fscanf(arc_c,"%s",actual_us.apellido);
@@ -380,6 +393,9 @@ void leer_reg(listas* us,Colas* sin){
                 }
             }
 
+            aux = us->cabeza;
+            poner = false;
+
         }
 
     }
@@ -399,34 +415,20 @@ void mostrar_his(Usua* us_act){
 
         impri = octen_tope(aux);
         desapilar(aux);
-        printf("tu: %s\n",impri.pregunta);
+        printf("Tu: %s\n",impri.pregunta);
         printf("IA: %s\n\n",impri.repuesta);
         apilar(us_act->historial,impri );
 
     }
 }
 
-Usua con_mas_pre(listas* us,Usua actu){
+Usua con_mas_pre(listas* us){
 
     Usua mas;
     Nodo_lista* aux;
-    bool sesion = false;
-
-    if(strcmp(actu.CI,"p") == 0){
-        sesion = true;
-    }
-
-    if (sesion) {
 
         mas = us->cabeza->usuario;
         aux = us->cabeza->next;
-
-    }else {
-
-        mas = actu;
-        aux = us->cabeza;
-
-    }
 
     while (aux != NULL) {
 
@@ -443,18 +445,19 @@ Usua con_mas_pre(listas* us,Usua actu){
     return mas;
 }
 
-
-void total_de_pre(listas* us,int* cont){
+int total_de_pre(listas* us){
     Nodo_lista* aux;
     aux = us->cabeza;
+    int cont = 0;
 
     while (aux != NULL) {
 
-        *cont = (*cont) + aux->usuario.cam_pre;
+        cont = cont + aux->usuario.cam_pre;
         aux = aux->next;
 
     }
 
+    return cont;
 }
 
 void ver_base_datos(Preg_res* ver){
@@ -494,5 +497,97 @@ void ver_base_datos(Preg_res* ver){
         }
 
     }
+
+}
+
+void amini_base(Colas* sin){
+
+    Preg_res aux;
+    char yn[5];
+    bool bany;
+
+    if (es_vacia_cola(sin)) {
+
+        printf("no hay preguntas sin respuestas\n");
+        printf("saliendo de Administrador de repuestas...\n");
+
+    }
+
+    while (!es_vacia_cola(sin)) {
+
+
+        bany =false;
+        aux = octe_primaro_cola(sin);
+
+        printf("hay en total %d preguntas sin respuesta en el sistema\n\n",longui_cola(sin));
+
+        printf("la primera de todas es %s \n\n",aux.pregunta);
+
+        printf("si desea reponder la, solo tienes que escribir la y se guardara en el sistema\n");
+        printf("si no quieras reporder la escribe exit\n");
+
+        printf("R:");
+        fgets(aux.repuesta, 70 , stdin);
+        fgets(aux.repuesta, 70 , stdin);
+        aux.repuesta[strcspn(aux.repuesta,"\n" )] = 0;
+
+        if(strcmp(aux.repuesta,"exit") != 0){
+
+            while (!bany) {
+
+                printf("\n|%s|\n\n",aux.repuesta);
+                printf("si esa es la repuesta decea para esa pregunta: %s \n",aux.pregunta);
+                printf("escriba Yes para si y No para no\n");
+                scanf("%s",yn);
+
+                if (strcmp(yn,"Yes") == 0) {
+
+                    printf("ok, repuesta guardad\n");
+                    act_base(aux);
+                    bany = true;
+                    desencolar(sin);
+
+                }else if (strcmp(yn,"No") == 0) {
+
+                    printf("ok, repuesta descartada\n");
+                    bany = true;
+
+                }else {
+
+                    printf("solo puedes escribir Yes o No\n");
+
+                }
+
+            }
+
+            if (es_vacia_cola(sin)) {
+
+                printf("ya no hay mas preguntas\n");
+
+            }
+
+        }
+
+        printf("saliendo de Administrador de repuestas...\n\n");
+
+    }
+
+}
+
+void act_base(Preg_res poner){
+
+    FILE *arc_base;
+
+    arc_base = fopen("BaseConocimiento.txt","a");
+
+    if(arc_base==NULL){
+        printf("Error\n");
+    }else {
+
+        fprintf(arc_base,"%s\n",poner.pregunta);
+        fprintf(arc_base,"%s\n",poner.repuesta);
+    }
+
+    fclose(arc_base);
 
 }

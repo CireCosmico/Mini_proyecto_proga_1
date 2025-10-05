@@ -1,4 +1,4 @@
-Total de consultas en todas las seciones: 5
+Total de consultas en todas las seciones: 8
 Total de consultas en esta seccion: 0
 Consultas sin respuesta: 0
-Usuario con mas consultas: 30000000 miku jimenez (3 consultas)
+Usuario con mas consultas: 30000000 miku jimenez (6 consultas)

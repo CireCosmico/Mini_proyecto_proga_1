@@ -4,12 +4,21 @@ Un modelo de lenguaje que genera texto similar al humano.
 16735596 Angel Landaeta
 ¿Como estas?
 Estoy funcionando correctamente, gracias.
-30000000 miku jimenez 
-eres ultron 
-no 
-30000000 miku jimenez 
-eres sonic.exe 
-si 
-30000000 miku jimenez 
-eres sonic.exe 
-si 
+30000000 miku jimenez
+¿eres ultron?
+no, por los momentos.
+30000000 miku jimenez
+¿tv time?
+big shop.
+30000000 miku jimenez
+¿eres puto?
+Lo siento, no entiendo tu consulta
+30000000 miku jimenez
+¿goku o kirby?
+Lo siento, no entiendo tu consulta
+30000000 miku jimenez
+hola slenderman
+Lo siento, no entiendo tu consulta
+30000000 miku jimenez
+¿goku o kirby?
+kirby.
