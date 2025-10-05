@@ -10,3 +10,6 @@ no
 30000000 miku jimenez 
 eres sonic.exe 
 si 
+30000000 miku jimenez 
+eres sonic.exe 
+si 
