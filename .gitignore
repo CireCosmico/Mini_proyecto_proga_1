@@ -1,1 +1,6 @@
 aqui se pone las cosa que no se van al repositorio
+
+main.o
+pilas/pila.o
+listas/lista.o
+colas/cola.o
