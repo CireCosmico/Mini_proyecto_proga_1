@@ -302,8 +302,6 @@ void guar_histori(Usua* usuari_act,Pilas* ultima ){
 
     }
 
-
-
     fclose(arc_coner);
 }
 
@@ -342,7 +340,7 @@ Usua* iniciar_se(listas* us){
 
         if(strcmp(veri->CI,"no") != 0){
 
-            printf("\nusuario en contrado\n\n");
+            printf("\nusuario en contrado, volviendo al menu\n\n");
             esta = true;
 
         }else {
@@ -425,6 +423,8 @@ void leer_reg(listas* us,Colas* sin){
         }
 
     }
+
+    fclose(arc_c);
 
 }
 
@@ -534,28 +534,31 @@ void amini_base(Colas* sin){
     char yn[5];
     bool bany;
 
+    printf("---Administrador---\n\n");
+    fgets(aux.repuesta, 70 , stdin);
+    bany =false;
+
     if (es_vacia_cola(sin)) {
 
         printf("no hay preguntas sin respuestas\n");
-        printf("saliendo de Administrador de repuestas...\n");
+        printf("saliendo de Administrador de repuestas...\n\n");
 
     }
 
-    while (!es_vacia_cola(sin)) {
+    while (!es_vacia_cola(sin) && !bany) {
 
 
-        bany =false;
+
         aux = octe_primaro_cola(sin);
 
         printf("hay en total %d preguntas sin respuesta en el sistema\n\n",longui_cola(sin));
 
-        printf("la primera de todas es %s \n\n",aux.pregunta);
+        printf("la primera de todas es: %s \n\n",aux.pregunta);
 
         printf("si desea reponder la, solo tienes que escribir la y se guardara en el sistema\n");
-        printf("si no quieras reporder la escribe exit\n");
+        printf("si no quieres reporder la escribe exit\n\n");
 
         printf("R:");
-        fgets(aux.repuesta, 70 , stdin);
         fgets(aux.repuesta, 70 , stdin);
         aux.repuesta[strcspn(aux.repuesta,"\n" )] = 0;
 
@@ -594,6 +597,10 @@ void amini_base(Colas* sin){
 
             }
 
+        }else {
+
+            bany = true;
+
         }
 
         printf("saliendo de Administrador de repuestas...\n\n");
@@ -631,6 +638,8 @@ void eliminar_ul(Usua* us,Pilas* ultima){
     if (!es_vacia_pila(ultima)) {
 
         do {
+
+            printf("---eliminar ultima pregunta---\n\n");
 
             printf("su ultima pregunta fue: %s\n",ult.pregunta);
             printf("con la repuesta: %s\n\n",ult.repuesta);
@@ -691,7 +700,7 @@ void ver_esta(){
         printf("Errorwww\n");
     }else {
 
-        printf("las estadísticas son la siguientes\n\n");
+        printf("\n---las estadísticas son la siguientes---\n\n");
 
         while (!feof(arc_esta)) {
 
@@ -700,6 +709,8 @@ void ver_esta(){
             printf("%s\n",aux);
 
         }
+
+        printf("\n");
 
     }
 
