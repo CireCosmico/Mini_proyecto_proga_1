@@ -9,8 +9,8 @@
 #include "colas/cola.h"
 
 void menu();
-int comsulta(Usua* usuari_act,Colas* sin);
-void guar_histori(Usua* usuari_act,Preg_res conver_act );
+int comsulta(Usua* usuari_act,Colas* sin,Pilas* ultima);
+void guar_histori(Usua* usuari_act,Pilas* ultima);
 void registro(Usua* usuari_act,int cantida_pre,int cantida_pre_act,int sin_res);
 listas* cargar_usuarios_desde_archivo();
 Usua registrar_usuario_teclado();
@@ -23,6 +23,8 @@ int total_de_pre(listas* us);
 void ver_base_datos(Preg_res* ver);
 void amini_base(Colas* sin);
 void act_base(Preg_res poner);
+void eliminar_ul(Usua* us,Pilas* ultima);
+void ver_esta();
 
 
 int main(){
@@ -80,6 +82,7 @@ void menu(){
     // no tocar aun que usted no lo crea esto funciana si
 
     listas* lis_us = cargar_usuarios_desde_archivo();
+    Pilas* ultima = crear_pila();
     Colas* conla_sin_res = crear_cola();
     int aux = 0,cantidad_preg_pre = 0;
     Usua* us_actual = (Usua*)malloc(sizeof(Usua));;
@@ -114,7 +117,7 @@ void menu(){
         printf("1.​ Iniciar sesión​\n");
         printf("2.​ Realizar consulta​\n");
         printf("​3.​ Ver historial de la seccion actual\n");
-        printf("4.​ Deshacer última consulta de la seccion actual​\n");
+        printf("4.​ Deshacer última consulta de la seccion actual​ y si haz echo preguntas hoy\n");
         printf("5.​ Ver estadísticas​​ generales\n");
         printf("​6.​ Administrador: ver cola de preguntas sin respuesta y actualizar la base de conocimiento.​\n");
         printf("​7.​ Salir.\n");
@@ -126,6 +129,7 @@ void menu(){
             case 1:
 
                 printf("haz elegido la 1 para iniciar seccion\n\n");
+                guar_histori(us_actual,ultima );
                 free(us_actual);
                 us_actual = iniciar_se(lis_us);
 
@@ -136,7 +140,7 @@ void menu(){
                 if(sesion){
 
                     printf("haz elegido la 2, iniciado una consulta con la IA\n\n");
-                    aux = comsulta(us_actual,conla_sin_res);
+                    aux = comsulta(us_actual,conla_sin_res,ultima);
                     us_actual->cam_pre = us_actual->cam_pre + aux;
 
                 }else {
@@ -171,6 +175,7 @@ void menu(){
 
                     printf("haz elegido la 4 para borrar la ulima pregunta de la seccion actual\n\n");
                     // imprimir ultima pregunta y preguntar si eliminarla
+                    eliminar_ul(us_actual,ultima);
 
                 }else {
 
@@ -187,7 +192,7 @@ void menu(){
                 cantidad_preg_pre = total_de_pre(lis_us);
                 registro(&us_conmas,cantidad_preg_pre,aux,longui_cola(conla_sin_res));
 
-
+                ver_esta();
                 //aqui hay que imprimir Estadisticas
 
             break;
@@ -219,9 +224,11 @@ void menu(){
     cantidad_preg_pre = total_de_pre(lis_us);
     registro(&us_conmas,cantidad_preg_pre,aux,longui_cola(conla_sin_res));
 
+    guar_histori(us_actual,ultima );
+
 }
 
-int comsulta(Usua* usuari_act,Colas* sin){
+int comsulta(Usua* usuari_act,Colas* sin,Pilas* ultima){
 
     Preg_res conver_prue;
     bool salir = false;
@@ -246,6 +253,7 @@ int comsulta(Usua* usuari_act,Colas* sin){
 
             printf("\nIA: %s\n\n",conver_prue.repuesta);
             apilar(usuari_act->historial,conver_prue );
+            apilar(ultima,conver_prue );
 
             if (strcmp(conver_prue.repuesta,"Lo siento, no entiendo tu consulta") == 0) {
 
@@ -254,8 +262,6 @@ int comsulta(Usua* usuari_act,Colas* sin){
             }
 
             cant_pre++;
-
-            guar_histori(usuari_act,conver_prue );
 
         }else {
 
@@ -268,21 +274,35 @@ int comsulta(Usua* usuari_act,Colas* sin){
     return cant_pre;
 }
 
-void guar_histori(Usua* usuari_act,Preg_res conver_act ){
+void guar_histori(Usua* usuari_act,Pilas* ultima ){
 
     FILE *arc_coner;
+    Preg_res conver_act;
+    Pilas* aux = crear_pila();
+
+    inver_pila(ultima,aux);
 
     arc_coner = fopen("Conversaciones.txt","a");
 
-    if(arc_coner==NULL){
-        printf("Error\n");
-    }else {
+    while (!es_vacia_pila(aux)) {
 
-        fprintf(arc_coner,"%s %s %s\n",usuari_act->CI,usuari_act->nombre,usuari_act->apellido );
-        fprintf(arc_coner,"%s\n",conver_act.pregunta );
-        fprintf(arc_coner,"%s\n",conver_act.repuesta );
+        if(arc_coner==NULL){
+            printf("Error\n");
+        }else {
+
+            conver_act = octen_tope(aux);
+
+            fprintf(arc_coner,"%s %s %s\n",usuari_act->CI,usuari_act->nombre,usuari_act->apellido );
+            fprintf(arc_coner,"%s\n",conver_act.pregunta );
+            fprintf(arc_coner,"%s\n",conver_act.repuesta );
+
+            desapilar(aux);
+
+        }
 
     }
+
+
 
     fclose(arc_coner);
 }
@@ -380,7 +400,13 @@ void leer_reg(listas* us,Colas* sin){
 
                     if (strcmp(act_pre.repuesta,"Lo siento, no entiendo tu consulta") == 0) {
 
-                        encolar(sin,act_pre);
+                        ver_base_datos(&act_pre);
+
+                        if (strcmp(act_pre.repuesta,"Lo siento, no entiendo tu consulta") == 0) {
+
+                            encolar(sin,act_pre);
+
+                        }
 
                     }
 
@@ -498,6 +524,8 @@ void ver_base_datos(Preg_res* ver){
 
     }
 
+    fclose(arc_bae);
+
 }
 
 void amini_base(Colas* sin){
@@ -589,5 +617,94 @@ void act_base(Preg_res poner){
     }
 
     fclose(arc_base);
+
+}
+
+void eliminar_ul(Usua* us,Pilas* ultima){
+
+    Preg_res ult = octen_tope(us->historial);
+    bool yes = false,val = false;
+    char aux[70];
+
+    fgets(aux, 70 , stdin);
+
+    if (!es_vacia_pila(ultima)) {
+
+        do {
+
+            printf("su ultima pregunta fue: %s\n",ult.pregunta);
+            printf("con la repuesta: %s\n\n",ult.repuesta);
+
+            printf("escriba Yes para eliminarla o escriba exit para no eliminarla y salir de la opccion\n\n");
+
+            printf("Op:");
+
+            fgets(aux, 70 , stdin);
+            aux[strcspn(aux,"\n" )] = 0;
+
+            if(strcmp(aux,"exit") == 0){
+
+                val = true;
+
+            }else if (strcmp(aux,"Yes") == 0) {
+
+                val = true;
+                yes = true;
+
+            }else {
+
+                printf("opcion no validad, vuelve a eligir\n\n");
+
+            }
+
+            if (yes) {
+
+                desapilar(ultima);
+                desapilar(us->historial);
+                printf("la consulta a sido elimansada, saliendo de la opcion...\n\n");
+
+            }else {
+
+                printf("la consulta no a sido elimansada, saliendo de la opcion...\n\n");
+
+            }
+
+        }while (!val);
+
+
+    }else {
+
+        printf("no hay nada que eliminar, saliendo de la opcion...\n\n");
+
+    }
+
+}
+
+void ver_esta(){
+
+    FILE* arc_esta;
+    char aux[150];
+
+    arc_esta = fopen("Estadisticas.txt","r");
+
+    if(arc_esta==NULL){
+        printf("Errorwww\n");
+    }else {
+
+        printf("las estadísticas son la siguientes\n\n");
+
+        while (!feof(arc_esta)) {
+
+            fgets(aux, 150 , arc_esta);
+            aux[strcspn(aux,"\n" )] = 0;
+            printf("%s\n",aux);
+
+        }
+
+    }
+
+    printf("saliendo de la opcion\n\n");
+
+    fclose(arc_esta);
 
 }
